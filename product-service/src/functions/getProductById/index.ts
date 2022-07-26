@@ -10,7 +10,7 @@ export default {
         request: {
           parameters: {
             paths: {
-              id: true,
+              productId: true,
             }
           }
         },

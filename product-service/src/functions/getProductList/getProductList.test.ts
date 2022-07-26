@@ -1,6 +1,6 @@
 import { handler } from './getProductList';
 
-describe('getProductsById', () => {
+describe('getProductList', () => {
   it('should return a list of products', async () => {
     const result = await handler();
     
