@@ -1,4 +1,5 @@
 import { Client, ClientConfig } from "pg";
+import 'dotenv/config';
 
 export const getClient = () => {
   const dbOptions: ClientConfig = {

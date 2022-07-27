@@ -6,6 +6,8 @@ import { createQueryGetProductById } from './query';
 import { uuidValidateV4 } from 'src/utils/uuid.utils';
 
 export const handler = async (event: APIGatewayProxyEvent) => {
+  console.log(event);
+  
   const { productId } = event.pathParameters;
 
   if (!uuidValidateV4(productId)) {
