@@ -1,23 +1,13 @@
-import { Client } from 'pg';
-import 'dotenv/config';
+import { APIGatewayProxyEvent } from 'aws-lambda';
 import { formatJSONResponse } from '../../libs/api-gateway';
 import { getProductListQuery } from './query';
 import { HttpCode } from '../../utils/http.utils';
+import { getClient } from '../../utils/connection.utils';
 
-const dbOptions = {
-  host: process.env.PG_HOST,
-  port: Number(process.env.PG_PORT),
-  database: process.env.PG_DATABASE,
-  user: process.env.PG_USERNAME,
-  password: process.env.PG_PASSWORD,
-  ssl: {
-    rejectUnauthorized: false
-  },
-  connectionTimeoutMillis: 5000
-}
-
-export const handler = async () => {
-  const client = new Client(dbOptions);
+export const handler = async (event: APIGatewayProxyEvent) => {
+  console.log(event);
+  
+  const client = getClient();
   await client.connect();
 
   try {
