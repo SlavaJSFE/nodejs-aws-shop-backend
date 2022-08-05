@@ -1,5 +1,4 @@
 import { handlerPath } from "@libs/handler-resolver";
-import 'dotenv/config';
 
 export default {
   handler: `${handlerPath(__dirname)}/importFileParser.handler`,
