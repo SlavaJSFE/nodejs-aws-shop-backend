@@ -1,12 +1,11 @@
-import { ListObjectsCommand } from '@aws-sdk/client-s3';
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { formatJSONResponse } from '@libs/api-gateway';
 import { HttpCode } from '@libs/httpCode';
-import { getS3Client } from '@libs/s3Client';
+import { getS3Client } from '@libs/s3Utils';
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import 'dotenv/config';
 
 const bucket = process.env.BUCKET;
-const region = process.env.REGION
 
 export const handler = async (event: APIGatewayProxyEvent) => {
   const fileName = event.queryStringParameters?.name;
@@ -21,20 +20,16 @@ export const handler = async (event: APIGatewayProxyEvent) => {
   const prefix = 'uploaded/';
   const params = {
     Bucket: bucket,
-    Prefix: prefix,
+    Key: `${prefix}${fileName}`,
   };
 
   try {
-    const { Contents } = await s3Client.send(new ListObjectsCommand(params));
-    const file = Contents.find((content) => content.Key === `${prefix}${fileName}`);
-    
-    if (!file) {
-      return formatJSONResponse({
-        message: `File with name ${fileName} was not found`,
-      }, HttpCode.BAD_REQUEST);
-    }
+    const command = new PutObjectCommand(params);
+    const presignedUrl = await getSignedUrl(s3Client, command, {
+      expiresIn: 3600,
+    });
 
-    return formatJSONResponse({ data: `https://${bucket}.s3.${region}.amazonaws.com/${file.Key}` });
+    return formatJSONResponse({ presignedUrl });
   } catch (error) {
     return formatJSONResponse({
       message: `Received data is invalid`,
