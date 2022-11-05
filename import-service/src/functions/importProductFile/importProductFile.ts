@@ -2,7 +2,7 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { formatJSONResponse } from '@libs/api-gateway';
 import { HttpCode } from '@libs/httpCode';
-import { getS3Client } from '@libs/s3Utils';
+import { s3Client } from '@libs/s3Utils';
 import { APIGatewayProxyEvent } from 'aws-lambda';
 
 const bucket = process.env.BUCKET;
@@ -16,7 +16,6 @@ export const handler = async (event: APIGatewayProxyEvent) => {
     }, HttpCode.BAD_REQUEST);
   }
   
-  const s3Client = getS3Client();
   const prefix = 'uploaded/';
   const params = {
     Bucket: bucket,
